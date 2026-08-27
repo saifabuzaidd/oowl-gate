@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "oowl-gate"
+version = "1.0.0"
+description = "AI-powered Infrastructure-as-Code security analysis engine"
+requires-python = ">=3.11"
+
+dependencies = [
+    "typer>=0.9",
+    "rich>=13",
+    "pydantic>=2",
+    "networkx>=3"
+]
+
+[project.scripts]
+oowl = "oowl.cli.main:app"
+
+[tool.setuptools.packages.find]
+include = ["oowl", "oowl.*"]
+

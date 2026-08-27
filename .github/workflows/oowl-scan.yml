@@ -1,0 +1,59 @@
+name: OOWL-GATE Security Scan
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  oowl-security-scan:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # تثبيت Terraform لتمكين الأداة من قراءة ملفات الـ IaC
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # تثبيت الأداة مع جميع متطلبات الذكاء الاصطناعي وأي مكتبات أخرى
+      - name: Install Dependencies and OOWL-GATE
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai google-generativeai networkx
+          pip install -e .
+
+      # تشغيل الفحص واستخراج النتائج
+      - name: Run OOWL Security Scan
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          echo "Starting OOWL scan..."
+          oowl ./examples/iac --output sarif > raw_output.txt || true
+          
+          # 1. استخراج ملف الـ JSON للتحميل 
+          sed -n '/^{/,$p' raw_output.txt > results.sarif
+          
+          # 2. عرض التقرير والتحذيرات مباشرة في صفحة GitHub لتكون سهلة القراءة
+          echo "### 🛡️ OOWL-GATE Security Assessment" >> $GITHUB_STEP_SUMMARY
+          echo '```text' >> $GITHUB_STEP_SUMMARY
+          # أخذ النص والتحذيرات فقط (تجاهل كود JSON)
+          sed '/^{/,$d' raw_output.txt >>$GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+      # رفع التقرير كـ Artifact لتحميله حتى لو كان المستودع خاصاً (Private)
+      - name: Upload Report as Artifact
+        uses: actions/upload-artifact@v4
+        if: always() 
+        with:
+          name: oowl-sarif-report
+          path: results.sarif
+
