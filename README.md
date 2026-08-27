@@ -1,8 +1,10 @@
+
+```markdown
 <!-- ===================================================================== -->
 <!-- PROJECT DOCUMENTATION METADATA                                        -->
-<!-- Project: OOWL-GATE | Version: 1.0.0 | Date: 2026-08-27                -->
+<!-- Project: OOWL-GATE | Version: 1.0.0 | Date: 2026-08-27               -->
 <!-- Authors: Saif AbuZaid, Ahmed Kandil, Malek Mostafa                    -->
-<!-- Repository: https://github.com/saifabuzaidd/oowl-gate                 -->
+<!-- Repository: https://github.com/saifabuzaidd/oowl-gate                  -->
 <!-- License: MIT License                                                  -->
 <!-- ===================================================================== -->
 
@@ -23,29 +25,32 @@ Unlike traditional static analysis tools that rely solely on isolated pattern-ma
 
 OOWL-GATE follows the **Ports and Adapters (Hexagonal Architecture)** design pattern. Core domain logic is decoupled from presentation layers, CLI entry points, and CI/CD execution environments.
 
-                ┌──────────────────────────────┐
-                │      INPUT TARGET IaC        │
-                └──────────────┬───────────────┘
-                               │
-                ┌──────────────▼───────────────┐
-                │   OOWL CORE ENGINE (BOUND)   │
-                │                              │
-                │ Ingestion ──► Graph ──► Risk │
-                │                   ▲      │   │
-                │                   │      ▼   │
-                │ Decision  ◄───────┴───  AI   │
-                └──────────────┬───────────────┘
-                               │
-                         PipelineResult
-                               │
-                               ▼
-                         ┌───────────┐
-                         │    CLI    │
-                         │  Adapter  │
-                         └───────────┘
+```text
+                    ┌──────────────────────────────┐
+                    │      INPUT TARGET IaC        │
+                    └──────────────┬───────────────┘
+                                   │
+                    ┌──────────────▼───────────────┐
+                    │   OOWL CORE ENGINE (BOUND)   │
+                    │                              │
+                    │ Ingestion ──► Graph ──► Risk │
+                    │                    ▲     │   │
+                    │                    │     ▼   │
+                    │ Decision  ◄───────┴───  AI   │
+                    └──────────────┬───────────────┘
+                                   │
+                             PipelineResult
+                                   │
+                                   ▼
+                             ┌───────────┐
+                             │    CLI    │
+                             │  Adapter  │
+                             └───────────┘
 
+```
 
 **Core Design Principles:**
+
 * **Canonical Data Contracts:** Internal stages communicate via immutable, strongly typed data contracts, preventing untyped dictionary mutations across boundaries.
 * **Unified Output Schema (`PipelineResult`):** Downstream presentation adapters consume a single, normalized result model.
 * **Deterministic Baseline, AI Augmented:** Base risk scoring remains fully reproducible through static rule validation, while the AI layer enriches findings with exploitability verification and code-level remediation.
@@ -69,22 +74,24 @@ The evaluation lifecycle processes target manifests through six distinct pipelin
                                                                                                  │
                                                                                            PipelineResult
 
----
+```
 
 * **Stage 0: Target Resolution & Input Boundary** (`oowl/ingestion/`)
-  Isolates supported infrastructure definitions (`.tf`, `.tf.json`), ignores state/cache artifacts (`.terraform/`), and constructs the execution scope.
+Isolates supported infrastructure definitions (`.tf`, `.tf.json`), ignores state/cache artifacts (`.terraform/`), and constructs the execution scope.
 * **Stage 1: Ingestion & Infrastructure Normalization** (`oowl/ingestion/adapters/terraform/`)
-  Parses HCL manifests into universal domain primitives (`InfrastructureModel`), extracting `Resource` entities and structural dependencies.
+Parses HCL manifests into universal domain primitives (`InfrastructureModel`), extracting `Resource` entities and structural dependencies.
 * **Stage 2: Graph Topology Engine & Attack Path Analysis** (`oowl/graph/`)
-  Builds a directed network graph (`networkx.DiGraph`) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable `AttackPath` chains.
+Builds a directed network graph (`networkx.DiGraph`) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable `AttackPath` chains.
 * **Stage 3: Deterministic Risk Engine** (`oowl/risk/`)
-  Evaluates static security rules (`internet_to_critical.py`, `unencrypted_transit.py`) against graph topologies to generate contextual `Finding` entities and compute a baseline risk score ($0.0 - 100.0$).
+Evaluates static security rules (`internet_to_critical.py`, `unencrypted_transit.py`) against graph topologies to generate contextual `Finding` entities and compute a baseline risk score ($0.0 - 100.0$).
 * **Stage 4: AI Cognitive Engine (Red / Blue Dynamics)** (`oowl/ai/`)
-  Executes multi-agent adversarial evaluation:
-  * **Virtual Hacker Agent (`hacker_agent.py`):** Red Team simulation evaluating real exploitability ($1.0 - 10.0$) and lateral movement potential.
-  * **AI Reviewer Agent (`reviewer_agent.py`):** Blue Team engine synthesizing root-cause policy drift and producing functional HCL remediations.
+Executes multi-agent adversarial evaluation:
+* **Virtual Hacker Agent (`hacker_agent.py`):** Red Team simulation evaluating real exploitability ($1.0 - 10.0$) and lateral movement potential.
+* **AI Reviewer Agent (`reviewer_agent.py`):** Blue Team engine synthesizing root-cause policy drift and producing functional HCL remediations.
+
+
 * **Stage 5: Decision Engine & Enforcement** (`oowl/decision/`)
-  Synthesizes deterministic findings and AI evaluation metrics to calculate the Composite Risk Index (CRI) and emit gate enforcement decisions.
+Synthesizes deterministic findings and AI evaluation metrics to calculate the Composite Risk Index (CRI) and emit gate enforcement decisions.
 
 ---
 
@@ -99,7 +106,7 @@ $$\text{CRI} = (\text{Base Risk Score} \times 0.70) + ((\text{AI Exploitability 
 ### Decision Matrix & Exit Codes
 
 | Gate Status | CRI Range | Exit Code | Action |
-| :--- | :--- | :--- | :--- |
+| --- | --- | --- | --- |
 | **PASS** | $\text{CRI} < 40.0$ | `0` | Pipeline execution approved for deployment. |
 | **WARN** | $40.0 \le \text{CRI} < 70.0$ | `2` | Manual security review required; warnings flagged. |
 | **FAIL** | $\text{CRI} \ge 70.0$ | `1` | Deployment blocked due to critical exploit paths. |
@@ -114,10 +121,12 @@ $$\text{CRI} = (\text{Base Risk Score} \times 0.70) + ((\text{AI Exploitability 
 .
 ├── app/
 │   └── run_project.py           # Pipeline runner & entry point
+├── Dockerfile                   # Container build configuration
 ├── labs_for_test/              # Local IaC test environments & validation scenarios
 │   ├── lab1/                   # High-risk lab (Public DB, SSH exposure)
 │   ├── lab2/                   # Moderate-risk lab
 │   └── lab3/                   # Compliant/Secure lab
+├── LICENSE                      # MIT Open Source License
 ├── oowl/                       # Core Application Package
 │   ├── ai/                     # Stage 4: AI Cognitive Domain
 │   │   ├── adapters/           # Provider interface (Gemini / LLM fallback)
@@ -135,14 +144,17 @@ $$\text{CRI} = (\text{Base Risk Score} \times 0.70) + ((\text{AI Exploitability 
 ├── pyproject.toml              # Build dependencies & project metadata
 └── README.md                   # Engine documentation
 
-
+```
 
 ---
 
-🚀 Quick Start
-1. Installation & Environment Setup
+## 🚀 Quick Start
+
+### 1. Installation & Environment Setup
+
 Clone the repository and set up a Python 3.11+ virtual environment:
 
+```bash
 # Clone the repository
 git clone [https://github.com/saifabuzaidd/oowl-gate.git](https://github.com/saifabuzaidd/oowl-gate.git)
 cd oowl-gate
@@ -154,21 +166,34 @@ source .venv/bin/activate
 # Install dependencies in editable mode
 pip install -e .
 
+```
 
-2. Configure API Keys
+### 2. Configure API Keys
+
 Export your Gemini API key (or primary LLM credentials):
 
+```bash
 export GEMINI_API_KEY="your_gemini_api_key_here"
 
+```
 
-3. Run Pipeline Assessment
+### 3. Run Pipeline Assessment
+
 Run an analysis pipeline pass against a test lab environment:
 
+```bash
 python3 app/run_project.py labs_for_test/lab1
+
+```
+
 ---
 
-🤖 CI/CD Integration
-To integrate OOWL-GATE into automated deployment workflows, configure .github/workflows/oowl-gate.yml:
+## 🤖 CI/CD Integration
+
+To integrate OOWL-GATE into automated deployment workflows, configure `.github/workflows/oowl-gate.yml`:
+
+```yaml
+name: OOWL-GATE IaC Security Gate
 
 on:
   push:
@@ -198,22 +223,31 @@ jobs:
         run: |
           python app/run_project.py labs_for_test/lab1
 
----
-
-
-Variable,Required,Default Model,Description
-GEMINI_API_KEY,Required,gemini-3.6-flash / pro,Primary API Key used for AI Red/Blue Team reasoning engines.
+```
 
 ---
 
-👥 Authors & Contributors
-Saif AbuZaid (Lead) - @saifabuzaidd | saifahmedcontact@gmail.com
+## ⚙️ Environment Variables
 
-Ahmed Kandil - @ATKCODING
+| Variable | Required | Default Model | Description |
+| --- | --- | --- | --- |
+| `GEMINI_API_KEY` | **Required** | `gemini-3.6-flash` / `pro` | Primary API Key used for AI Red/Blue Team reasoning engines. |
 
-Malek Mostafa
 
 ---
 
-📜 License
-Distributed under the MIT License. See LICENSE for more information.
+## 👥 Authors & Contributors
+
+* **Saif AbuZaid** (Lead) - [@saifabuzaidd](https://www.google.com/search?q=https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](https://www.google.com/search?q=mailto%3Asaifahmedcontact%40gmail.com)
+* **Ahmed Kandil** - [@ATKCODING](https://www.google.com/search?q=https://github.com/ATKCODING)
+* **Malek Mostafa**
+
+---
+
+## 📜 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
+
+```
+
+```
