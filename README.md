@@ -238,8 +238,8 @@ jobs:
 
 ## 👥 Authors & Contributors
 
-* **Saif AbuZaid** (Lead) - [@saifabuzaidd](https://www.google.com/search?q=https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](https://www.google.com/search?q=mailto%3Asaifahmedcontact%40gmail.com)
-* **Ahmed Kandil** - [@ATKCODING](https://www.google.com/search?q=https://github.com/ATKCODING)
+* **Saif AbuZaid** (Lead) - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](mailto:saifahmedcontact@gmail.com)
+* **Ahmed Kandil** - [@ATKCODING](https://github.com/ATKCODING)
 * **Malek Mostafa**
 
 ---
@@ -249,5 +249,6 @@ jobs:
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ```
+
 
 ```
