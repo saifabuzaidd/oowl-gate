@@ -57,17 +57,17 @@ OOWL-GATE follows the **Ports and Adapters (Hexagonal Architecture)** design pat
 
 The evaluation lifecycle processes target manifests through six distinct pipeline phases:
 
-
+```text
 [ Target IaC ]
-│
-▼
+     │
+     ▼
 ┌──────────┐    ┌───────────┐    ┌───────────┐    ┌───────────────┐    ┌──────────────┐    ┌───────────┐
 │ Stage 0  │──► │  Stage 1  │──► │  Stage 2  │──► │    Stage 3    │──► │   Stage 4    │──► │  Stage 5  │
 │ Target   │    │ Ingestion │    │ Graph     │    │ Deterministic │    │ AI Cognitive │    │ Decision  │
 │ Resolver │    │ Engine    │    │ Topology  │    │ Risk Engine   │    │ Engine       │    │ Engine    │
 └──────────┘    └───────────┘    └───────────┘    └───────────────┘    └──────────────┘    └───────────┘
-│
-PipelineResult
+                                                                                                 │
+                                                                                           PipelineResult
 
 ---
 
