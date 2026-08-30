@@ -207,12 +207,11 @@ jobs:
 | --- | --- | --- | --- |
 | GEMINI_API_KEY | Required | gemini-3.6-flash / pro | Primary API Key used for AI Red/Blue Team reasoning engines. |
 
-👥 Authors & Contributors
-Saif AbuZaid - @saifabuzaidd | saifahmedcontact@gmail.com
+## 👥 Authors & Contributors
 
-Ahmed Kandil - @ATKCODING
-
-Malek Mostafa
+* **Saif AbuZaid** - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](mailto:saifahmedcontact@gmail.com)
+* **Ahmed Kandil** - [@ATKCODING](https://github.com/ATKCODING)
+* **Malek Mostafa**
 
 📜 License
 Distributed under the MIT License. See LICENSE for more information.
