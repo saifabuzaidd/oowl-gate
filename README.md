@@ -1,7 +1,8 @@
+
 ```markdown
 <!-- ===================================================================== -->
 <!-- PROJECT DOCUMENTATION METADATA                                        -->
-<!-- Project: OOWL-GATE | Version: 1.0.0 | Date: 2026-08-27                -->
+<!-- Project: OOWL-GATE | Version: 1.0.0 | Date: 2026-08-27               -->
 <!-- Authors: Saif AbuZaid, Ahmed Kandil, Malek Mostafa                    -->
 <!-- Repository: https://github.com/saifabuzaidd/oowl-gate                 -->
 <!-- License: MIT License                                                  -->
@@ -30,8 +31,8 @@ OOWL-GATE follows the **Ports and Adapters (Hexagonal Architecture)** design pat
                     │   OOWL CORE ENGINE (BOUND)   │
                     │                              │
                     │ Ingestion ──► Graph ──► Risk │
-                    │                   ▲      │   │
-                    │                   │      ▼   │
+                    │                    ▲     │   │
+                    │                    │     ▼   │
                     │ Decision  ◄───────┴───  AI   │
                     └──────────────┬───────────────┘
                                    │
