@@ -68,15 +68,27 @@ The evaluation lifecycle processes target manifests through six distinct pipelin
 
 ```
 
-Stage 0: Target Resolution & Input Boundary (oowl/ingestion/) Isolates supported infrastructure definitions (.tf, .tf.json), ignores state/cache artifacts (.terraform/), and constructs the execution scope.
+Stage 0: Target Resolution & Input Boundary (oowl/ingestion/)
+Isolates supported infrastructure definitions (.tf, .tf.json), ignores state/cache artifacts (.terraform/), and constructs the execution scope.
 
-Stage 1: Ingestion & Infrastructure Normalization (oowl/ingestion/adapters/terraform/) Parses HCL manifests into universal domain primitives (InfrastructureModel), extracting Resource entities and structural dependencies.
-Stage 2: Graph Topology Engine & Attack Path Analysis (oowl/graph/) Builds a directed network graph (networkx.DiGraph) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable AttackPath chains.
-Stage 3: Deterministic Risk Engine (oowl/risk/) Evaluates static security rules (internet_to_critical.py, unencrypted_transit.py) against graph topologies to generate contextual Finding entities and compute a baseline risk score (0.0−100.0).
-Stage 4: AI Cognitive Engine (Red / Blue Dynamics) (oowl/ai/) Executes multi-agent adversarial evaluation:
-Virtual Hacker Agent (hacker_agent.py): Red Team simulation evaluating real exploitability (1.0−10.0) and lateral movement potential.
+Stage 1: Ingestion & Infrastructure Normalization (oowl/ingestion/adapters/terraform/)
+Parses HCL manifests into universal domain primitives (InfrastructureModel), extracting Resource entities and structural dependencies.
+
+Stage 2: Graph Topology Engine & Attack Path Analysis (oowl/graph/)
+Builds a directed network graph (networkx.DiGraph) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable AttackPath chains.
+
+Stage 3: Deterministic Risk Engine (oowl/risk/)
+Evaluates static security rules (internet_to_critical.py, unencrypted_transit.py) against graph topologies to generate contextual Finding entities and compute a baseline risk score (0.0 - 100.0).
+
+Stage 4: AI Cognitive Engine (Red / Blue Dynamics) (oowl/ai/)
+Executes multi-agent adversarial evaluation:
+
+Virtual Hacker Agent (hacker_agent.py): Red Team simulation evaluating real exploitability (1.0 - 10.0) and lateral movement potential.
+
 AI Reviewer Agent (reviewer_agent.py): Blue Team engine synthesizing root-cause policy drift and producing functional HCL remediations.
-Stage 5: Decision Engine & Enforcement (oowl/decision/) Synthesizes deterministic findings and AI evaluation metrics to calculate the Composite Risk Index (CRI) and emit gate enforcement decisions.
+
+Stage 5: Decision Engine & Enforcement (oowl/decision/)
+Synthesizes deterministic findings and AI evaluation metrics to calculate the Composite Risk Index (CRI) and emit gate enforcement decisions.
 
 📊 Risk Scoring & Enforcement Model
 
