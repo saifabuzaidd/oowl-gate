@@ -6,7 +6,7 @@
 <!-- License: MIT License                                                  -->
 <!-- ===================================================================== -->
 
-# 🦉 OOWL-GATE: AI-Augmented IaC Security Intelligence Engine
+# 🦉 OOWL-GATE: AI Augmented IaC Security Intelligence Engine
 
 [![Python Version](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) [![Architecture](https://img.shields.io/badge/Architecture-Hexagonal-orange.svg)](#-architectural-framework) [![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)](https://github.com/saifabuzaidd/oowl-gate/actions)
 
