@@ -231,7 +231,7 @@ jobs:
 
 ## 👥 Authors & Contributors
 
-* **Saif AbuZaid** - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](https://www.google.com/search?q=mailto%3Asaifahmedcontact%40gmail.com)
+* **Saif AbuZaid** - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](mailto:saifahmedcontact@gmail.com)
 * **Ahmed Kandil** - [@ATKCODING](https://github.com/ATKCODING)
 * **Malek Mostafa**
 
