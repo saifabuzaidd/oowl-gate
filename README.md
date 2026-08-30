@@ -1,10 +1,9 @@
-
 ```markdown
 <!-- ===================================================================== -->
 <!-- PROJECT DOCUMENTATION METADATA                                        -->
-<!-- Project: OOWL-GATE | Version: 1.0.0 | Date: 2026-08-27               -->
+<!-- Project: OOWL-GATE | Version: 1.0.0 | Date: 2026-08-27                -->
 <!-- Authors: Saif AbuZaid, Ahmed Kandil, Malek Mostafa                    -->
-<!-- Repository: https://github.com/saifabuzaidd/oowl-gate                  -->
+<!-- Repository: https://github.com/saifabuzaidd/oowl-gate                 -->
 <!-- License: MIT License                                                  -->
 <!-- ===================================================================== -->
 
@@ -31,8 +30,8 @@ OOWL-GATE follows the **Ports and Adapters (Hexagonal Architecture)** design pat
                     │   OOWL CORE ENGINE (BOUND)   │
                     │                              │
                     │ Ingestion ──► Graph ──► Risk │
-                    │                    ▲     │   │
-                    │                    │     ▼   │
+                    │                   ▲      │   │
+                    │                   │      ▼   │
                     │ Decision  ◄───────┴───  AI   │
                     └──────────────┬───────────────┘
                                    │
@@ -80,10 +79,10 @@ Parses HCL manifests into universal domain primitives (`InfrastructureModel`), e
 * **Stage 2: Graph Topology Engine & Attack Path Analysis** (`oowl/graph/`)
 Builds a directed network graph (`networkx.DiGraph`) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable `AttackPath` chains.
 * **Stage 3: Deterministic Risk Engine** (`oowl/risk/`)
-Evaluates static security rules (`internet_to_critical.py`, `unencrypted_transit.py`) against graph topologies to generate contextual `Finding` entities and compute a baseline risk score ($0.0 - 100.0$).
+Evaluates static security rules (`internet_to_critical.py`, `unencrypted_transit.py`) against graph topologies to generate contextual `Finding` entities and compute a baseline risk score (0.0 - 100.0).
 * **Stage 4: AI Cognitive Engine (Red / Blue Dynamics)** (`oowl/ai/`)
 Executes multi-agent adversarial evaluation:
-* **Virtual Hacker Agent (`hacker_agent.py`):** Red Team simulation evaluating real exploitability ($1.0 - 10.0$) and lateral movement potential.
+* **Virtual Hacker Agent (`hacker_agent.py`):** Red Team simulation evaluating real exploitability (1.0 - 10.0) and lateral movement potential.
 * **AI Reviewer Agent (`reviewer_agent.py`):** Blue Team engine synthesizing root-cause policy drift and producing functional HCL remediations.
 
 
@@ -119,27 +118,27 @@ $$\text{CRI} = (\text{Base Risk Score} \times 0.70) + ((\text{AI Exploitability 
 ├── app/
 │   └── run_project.py           # Pipeline runner & entry point
 ├── Dockerfile                   # Container build configuration
-├── labs_for_test/              # Local IaC test environments & validation scenarios
-│   ├── lab1/                   # High-risk lab (Public DB, SSH exposure)
-│   ├── lab2/                   # Moderate-risk lab
-│   └── lab3/                   # Compliant/Secure lab
+├── labs_for_test/               # Local IaC test environments & validation scenarios
+│   ├── lab1/                    # High-risk lab (Public DB, SSH exposure)
+│   ├── lab2/                    # Moderate-risk lab
+│   └── lab3/                    # Compliant/Secure lab
 ├── LICENSE                      # MIT Open Source License
-├── oowl/                       # Core Application Package
-│   ├── ai/                     # Stage 4: AI Cognitive Domain
-│   │   ├── adapters/           # Provider interface (Gemini / LLM fallback)
-│   │   ├── agents/             # Hacker (Red) & Reviewer (Blue) agents
-│   │   ├── models/             # AI DTO schemas
-│   │   ├── orchestrator/       # AI execution pipeline conductor
-│   │   └── utils/              # Context generation & IaC readers
-│   ├── cli/                    # Presentation Layer: CLI interfaces
-│   ├── core/                   # Canonical domain infrastructure models
-│   ├── decision/               # Stage 5: CRI calculation & enforcement
-│   ├── graph/                  # Stage 2: Topology engine & path traversal
-│   ├── ingestion/              # Stage 1: Terraform parsing & AST mapping
-│   ├── pipeline/               # Main multi-stage orchestrator
-│   └── risk/                   # Stage 3: Static rule engine & findings
-├── pyproject.toml              # Build dependencies & project metadata
-└── README.md                   # Engine documentation
+├── oowl/                        # Core Application Package
+│   ├── ai/                      # Stage 4: AI Cognitive Domain
+│   │   ├── adapters/            # Provider interface (Gemini / LLM fallback)
+│   │   ├── agents/              # Hacker (Red) & Reviewer (Blue) agents
+│   │   ├── models/              # AI DTO schemas
+│   │   ├── orchestrator/        # AI execution pipeline conductor
+│   │   └── utils/               # Context generation & IaC readers
+│   ├── cli/                     # Presentation Layer: CLI interfaces
+│   ├── core/                    # Canonical domain infrastructure models
+│   ├── decision/                # Stage 5: CRI calculation & enforcement
+│   ├── graph/                   # Stage 2: Topology engine & path traversal
+│   ├── ingestion/               # Stage 1: Terraform parsing & AST mapping
+│   ├── pipeline/                # Main multi-stage orchestrator
+│   └── risk/                    # Stage 3: Static rule engine & findings
+├── pyproject.toml               # Build dependencies & project metadata
+└── README.md                    # Engine documentation
 
 ```
 
@@ -230,12 +229,11 @@ jobs:
 | --- | --- | --- | --- |
 | `GEMINI_API_KEY` | **Required** | `gemini-3.6-flash` / `pro` | Primary API Key used for AI Red/Blue Team reasoning engines. |
 
-
 ---
 
 ## 👥 Authors & Contributors
 
-* **Saif AbuZaid** - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](mailto:saifahmedcontact@gmail.com)
+* **Saif AbuZaid** - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](https://www.google.com/search?q=mailto%3Asaifahmedcontact%40gmail.com)
 * **Ahmed Kandil** - [@ATKCODING](https://github.com/ATKCODING)
 * **Malek Mostafa**
 
@@ -244,3 +242,7 @@ jobs:
 ## 📜 License
 
 Distributed under the MIT License. See `LICENSE` for more information.
+
+```
+
+```
