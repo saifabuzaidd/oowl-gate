@@ -1,4 +1,3 @@
-
 ```markdown
 <!-- ===================================================================== -->
 <!-- PROJECT DOCUMENTATION METADATA                                        -->
@@ -31,8 +30,8 @@ OOWL-GATE follows the **Ports and Adapters (Hexagonal Architecture)** design pat
                     │   OOWL CORE ENGINE (BOUND)   │
                     │                              │
                     │ Ingestion ──► Graph ──► Risk │
-                    │                    ▲     │   │
-                    │                    │     ▼   │
+                    │                   ▲      │   │
+                    │                   │      ▼   │
                     │ Decision  ◄───────┴───  AI   │
                     └──────────────┬───────────────┘
                                    │
@@ -46,16 +45,13 @@ OOWL-GATE follows the **Ports and Adapters (Hexagonal Architecture)** design pat
 
 ```
 
-**Core Design Principles:**
+Core Design Principles:
+Canonical Data Contracts: Internal stages communicate via immutable, strongly typed data contracts, preventing untyped dictionary mutations across boundaries.
+Unified Output Schema (PipelineResult): Downstream presentation adapters consume a single, normalized result model.
+Deterministic Baseline, AI Augmented: Base risk scoring remains fully reproducible through static rule validation, while the AI layer enriches findings with exploitability verification and code-level remediation.
+Resilient Provider Fallback: The AI orchestration layer features automated provider failover (e.g., fallback to Google Gemini if primary LLM endpoints encounter rate limits).
 
-* **Canonical Data Contracts:** Internal stages communicate via immutable, strongly typed data contracts, preventing untyped dictionary mutations across boundaries.
-* **Unified Output Schema (`PipelineResult`):** Downstream presentation adapters consume a single, normalized result model.
-* **Deterministic Baseline, AI Augmented:** Base risk scoring remains fully reproducible through static rule validation, while the AI layer enriches findings with exploitability verification and code-level remediation.
-* **Resilient Provider Fallback:** The AI orchestration layer features automated provider failover (e.g., fallback to Google Gemini if primary LLM endpoints encounter rate limits).
-
----
-
-## ⚙️ Analysis Pipeline Stages
+⚙️ Analysis Pipeline Stages
 
 The evaluation lifecycle processes target manifests through six distinct pipeline phases:
 
@@ -73,81 +69,67 @@ The evaluation lifecycle processes target manifests through six distinct pipelin
 
 ```
 
-* **Stage 0: Target Resolution & Input Boundary** (`oowl/ingestion/`)
-Isolates supported infrastructure definitions (`.tf`, `.tf.json`), ignores state/cache artifacts (`.terraform/`), and constructs the execution scope.
-* **Stage 1: Ingestion & Infrastructure Normalization** (`oowl/ingestion/adapters/terraform/`)
-Parses HCL manifests into universal domain primitives (`InfrastructureModel`), extracting `Resource` entities and structural dependencies.
-* **Stage 2: Graph Topology Engine & Attack Path Analysis** (`oowl/graph/`)
-Builds a directed network graph (`networkx.DiGraph`) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable `AttackPath` chains.
-* **Stage 3: Deterministic Risk Engine** (`oowl/risk/`)
-Evaluates static security rules (`internet_to_critical.py`, `unencrypted_transit.py`) against graph topologies to generate contextual `Finding` entities and compute a baseline risk score (0.0 - 100.0).
-* **Stage 4: AI Cognitive Engine (Red / Blue Dynamics)** (`oowl/ai/`)
-Executes multi-agent adversarial evaluation:
-* **Virtual Hacker Agent (`hacker_agent.py`):** Red Team simulation evaluating real exploitability (1.0 - 10.0) and lateral movement potential.
-* **AI Reviewer Agent (`reviewer_agent.py`):** Blue Team engine synthesizing root-cause policy drift and producing functional HCL remediations.
+Stage 0: Target Resolution & Input Boundary (oowl/ingestion/) Isolates supported infrastructure definitions (.tf, .tf.json), ignores state/cache artifacts (.terraform/), and constructs the execution scope.
 
+Stage 1: Ingestion & Infrastructure Normalization (oowl/ingestion/adapters/terraform/) Parses HCL manifests into universal domain primitives (InfrastructureModel), extracting Resource entities and structural dependencies.
+Stage 2: Graph Topology Engine & Attack Path Analysis (oowl/graph/) Builds a directed network graph (networkx.DiGraph) representing compute nodes, databases, storage, IAM bindings, and exposure parameters. Traverses entry points via depth-first and breadth-first algorithms to discover viable AttackPath chains.
+Stage 3: Deterministic Risk Engine (oowl/risk/) Evaluates static security rules (internet_to_critical.py, unencrypted_transit.py) against graph topologies to generate contextual Finding entities and compute a baseline risk score (0.0−100.0).
+Stage 4: AI Cognitive Engine (Red / Blue Dynamics) (oowl/ai/) Executes multi-agent adversarial evaluation:
+Virtual Hacker Agent (hacker_agent.py): Red Team simulation evaluating real exploitability (1.0−10.0) and lateral movement potential.
+AI Reviewer Agent (reviewer_agent.py): Blue Team engine synthesizing root-cause policy drift and producing functional HCL remediations.
+Stage 5: Decision Engine & Enforcement (oowl/decision/) Synthesizes deterministic findings and AI evaluation metrics to calculate the Composite Risk Index (CRI) and emit gate enforcement decisions.
 
-* **Stage 5: Decision Engine & Enforcement** (`oowl/decision/`)
-Synthesizes deterministic findings and AI evaluation metrics to calculate the Composite Risk Index (CRI) and emit gate enforcement decisions.
+📊 Risk Scoring & Enforcement Model
 
----
-
-## 📊 Risk Scoring & Enforcement Model
-
-### Composite Risk Index (CRI)
+Composite Risk Index (CRI)
 
 The final risk index balances static topological rules with AI-validated exploitability:
+CRI=(Base Risk Score×0.70)+((AI Exploitability Score×10)×0.30)
 
-$$\text{CRI} = (\text{Base Risk Score} \times 0.70) + ((\text{AI Exploitability Score} \times 10) \times 0.30)$$
-
-### Decision Matrix & Exit Codes
+Decision Matrix & Exit Codes
 
 | Gate Status | CRI Range | Exit Code | Action |
 | --- | --- | --- | --- |
-| **PASS** | $\text{CRI} < 40.0$ | `0` | Pipeline execution approved for deployment. |
-| **WARN** | $40.0 \le \text{CRI} < 70.0$ | `2` | Manual security review required; warnings flagged. |
-| **FAIL** | $\text{CRI} \ge 70.0$ | `1` | Deployment blocked due to critical exploit paths. |
+| PASS | CRI<40.0 | 0 | Pipeline execution approved for deployment. |
+| WARN | 40.0≤CRI<70.0 | 2 | Manual security review required; warnings flagged. |
+| FAIL | CRI≥70.0 | 1 | Deployment blocked due to critical exploit paths. |
 
-> **Critical Escalation Guardrail:** If the AI Exploitability Score reaches $\ge 8.0/10.0$, the Decision Engine automatically escalates the status to **WARN** or **FAIL**, overriding low baseline static scores.
+Critical Escalation Guardrail: If the AI Exploitability Score reaches ≥8.0/10.0, the Decision Engine automatically escalates the status to WARN or FAIL, overriding low baseline static scores.
 
----
-
-## 📁 Project Structure
+📁 Project Structure
 
 ```text
 .
 ├── app/
 │   └── run_project.py           # Pipeline runner & entry point
 ├── Dockerfile                   # Container build configuration
-├── labs_for_test/               # Local IaC test environments & validation scenarios
-│   ├── lab1/                    # High-risk lab (Public DB, SSH exposure)
-│   ├── lab2/                    # Moderate-risk lab
-│   └── lab3/                    # Compliant/Secure lab
+├── labs_for_test/              # Local IaC test environments & validation scenarios
+│   ├── lab1/                   # High-risk lab (Public DB, SSH exposure)
+│   ├── lab2/                   # Moderate-risk lab
+│   └── lab3/                   # Compliant/Secure lab
 ├── LICENSE                      # MIT Open Source License
-├── oowl/                        # Core Application Package
-│   ├── ai/                      # Stage 4: AI Cognitive Domain
-│   │   ├── adapters/            # Provider interface (Gemini / LLM fallback)
-│   │   ├── agents/              # Hacker (Red) & Reviewer (Blue) agents
-│   │   ├── models/              # AI DTO schemas
-│   │   ├── orchestrator/        # AI execution pipeline conductor
-│   │   └── utils/               # Context generation & IaC readers
-│   ├── cli/                     # Presentation Layer: CLI interfaces
-│   ├── core/                    # Canonical domain infrastructure models
-│   ├── decision/                # Stage 5: CRI calculation & enforcement
-│   ├── graph/                   # Stage 2: Topology engine & path traversal
-│   ├── ingestion/               # Stage 1: Terraform parsing & AST mapping
-│   ├── pipeline/                # Main multi-stage orchestrator
-│   └── risk/                    # Stage 3: Static rule engine & findings
-├── pyproject.toml               # Build dependencies & project metadata
-└── README.md                    # Engine documentation
+├── oowl/                       # Core Application Package
+│   ├── ai/                     # Stage 4: AI Cognitive Domain
+│   │   ├── adapters/           # Provider interface (Gemini / LLM fallback)
+│   │   ├── agents/             # Hacker (Red) & Reviewer (Blue) agents
+│   │   ├── models/             # AI DTO schemas
+│   │   ├── orchestrator/       # AI execution pipeline conductor
+│   │   └── utils/              # Context generation & IaC readers
+│   ├── cli/                    # Presentation Layer: CLI interfaces
+│   ├── core/                   # Canonical domain infrastructure models
+│   ├── decision/               # Stage 5: CRI calculation & enforcement
+│   ├── graph/                  # Stage 2: Topology engine & path traversal
+│   ├── ingestion/              # Stage 1: Terraform parsing & AST mapping
+│   ├── pipeline/               # Main multi-stage orchestrator
+│   └── risk/                   # Stage 3: Static rule engine & findings
+├── pyproject.toml              # Build dependencies & project metadata
+└── README.md                   # Engine documentation
 
 ```
 
----
+🚀 Quick Start
 
-## 🚀 Quick Start
-
-### 1. Installation & Environment Setup
+1. Installation & Environment Setup
 
 Clone the repository and set up a Python 3.11+ virtual environment:
 
@@ -165,7 +147,7 @@ pip install -e .
 
 ```
 
-### 2. Configure API Keys
+2. Configure API Keys
 
 Export your Gemini API key (or primary LLM credentials):
 
@@ -174,7 +156,7 @@ export GEMINI_API_KEY="your_gemini_api_key_here"
 
 ```
 
-### 3. Run Pipeline Assessment
+3. Run Pipeline Assessment
 
 Run an analysis pipeline pass against a test lab environment:
 
@@ -183,11 +165,9 @@ python3 app/run_project.py labs_for_test/lab1
 
 ```
 
----
+🤖 CI/CD Integration
 
-## 🤖 CI/CD Integration
-
-To integrate OOWL-GATE into automated deployment workflows, configure `.github/workflows/oowl-gate.yml`:
+To integrate OOWL-GATE into automated deployment workflows, configure .github/workflows/oowl-gate.yml:
 
 ```yaml
 name: OOWL-GATE IaC Security Gate
@@ -222,28 +202,18 @@ jobs:
 
 ```
 
----
-
-## ⚙️ Environment Variables
+⚙️ Environment Variables
 
 | Variable | Required | Default Model | Description |
 | --- | --- | --- | --- |
-| `GEMINI_API_KEY` | **Required** | `gemini-3.6-flash` / `pro` | Primary API Key used for AI Red/Blue Team reasoning engines. |
+| GEMINI_API_KEY | Required | gemini-3.6-flash / pro | Primary API Key used for AI Red/Blue Team reasoning engines. |
 
----
+👥 Authors & Contributors
 
-## 👥 Authors & Contributors
+Saif AbuZaid - @saifabuzaidd | saifahmedcontact@gmail.com
+Ahmed Kandil - @ATKCODING
+Malek Mostafa
 
-* **Saif AbuZaid** - [@saifabuzaidd](https://github.com/saifabuzaidd) | [saifahmedcontact@gmail.com](https://www.google.com/search?q=mailto%3Asaifahmedcontact%40gmail.com)
-* **Ahmed Kandil** - [@ATKCODING](https://github.com/ATKCODING)
-* **Malek Mostafa**
+📜 License
 
----
-
-## 📜 License
-
-Distributed under the MIT License. See `LICENSE` for more information.
-
-```
-
-```
+Distributed under the MIT License. See LICENSE for more information.
